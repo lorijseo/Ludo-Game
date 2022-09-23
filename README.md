@@ -1,5 +1,5 @@
 
-This is a simplified version of the original Ludo game using one class Ludogame (https://en.wikipedia.org/wiki/Ludo_(board_game)).
+This is a simplified version of the original Ludo game.
 
 For this board game, two, three, or four players can play. Each player has 2 tokens. At the beginning of the game, each player's two tokens are in the player's home yard. Each player takes a turn by rolling the dice. On a turn, a player can move a token that is on the board clockwise the number of steps indicated by the die along the track. Moving a token out of the home yard onto the board’ “ready to go position” can only be done by rolling a **6**. Rolling a 6 earns the player an additional roll in that turn. If the bonus roll results in a 6 again, there is no additional roll again.
 
@@ -13,7 +13,7 @@ When a token finishes one move, if it lands on a space occupied by an opponent's
 
 If the player’s two tokens land on the same space on the board, the player will **stack** the two tokens and move them as one piece until they reach the finishing square. When stacked pieces are sent back to their home yard by an opponent landing on them, they are no longer stacked. Note that if two tokens are both at the “ready to go” position, they are not stacked.
 
-An example game board can be seen in the following picture.  We have four positions 'A' 'B 'C' and 'D' for players to choose. All tokens will move **clockwise 50 steps** on the board and then enter their corresponding home squares, but different positions have different **start** and **end** space. At the game beginning, if the player at position A rolls the number 6, token “Ap” in player A’s home yard will move to the “ready to go” position. Then player A gets another roll and rolls, for example, the number 4, and the token will enter the board from space “1” and then move 4 steps to space “4”. Then the token will move clockwise up to space “50” and then enter position A’s **“home squares”** A1, A2, … A6.  When the token reaches square “E” on an exact move, the token has finished.  If the token lands on space “A5”, and then moves 4 steps, it will bounce back to A5 again.  If the token moves 5 steps instead, it will land on A4.  Here, space “1” is position A’s start space number, and space “50” is position A’s end space number.  For player at position B, the start and end number are 15 and 8.  For C they are 29 and 22.  For D they are 43 and 36.
+
 
 (Check the Ludoboard.png)
 
@@ -24,28 +24,6 @@ A **decision-making** algorithm was implemented for a player to choose a certain
 3. If one token can move and kick out an opponent token, then move that token
 4. Move the token that is further away from the finishing square
 
-We will pass in the roll numbers manually when we call the method.
- 
-**Player:**
-
-The Player object represents the player who plays the game at a certain position. The class must contain the following information (but may have more):
-  * the position the player choose (A, B, C or D)
-  * start and end space for this player
-  * current position of the player’s two tokens: in the home yard, ready to go, somewhere on the board, or has finished.
-  * the current state of the player: whether the player has won and finished the game, or is still playing
-  
-The Player class should have those methods (but may have more):
-  * get_completed: takes no parameters and returns True or False if the player has finished or not finished the game
-  * get_token_p_step_count: takes no parameters and returns the total steps the token p has taken on the board (use steps = -1 for home yard position and steps = 0 for ready to go position) The total step should not be larger than 57.  Please note that if the token is bounced back in the home squares, this bounced part should be subtracted from the step count. For example, when token p is at space A5, the total step is 55 now.  If it moves 5 steps and bounces back to A4, the total step should be 54, not 60.
-* get_token_q_step_count: takes no parameters and returns the total steps the token q has taken on the board  (use steps = -1 for home yard position and steps = 0 for ready to go position)
-* get_space_name: takes as a parameter the total steps of the token and returns the name of the space the token has landed on the board as a string.  It should be able to return the home yard position (‘H’) and the ready to go position (‘R’) as well.
-  
-**LudoGame:**
-
-The LudoGame object represents the game as played.  The class should contain information about the players and information about the board, it must contain the following methods (but may have more):
-* get_player_by_position takes a parameter representing the player’s position as a string and returns the player object. For an invalid string parameter, it will return "Player not found!"
-* move_token method takes three parameters, the player object, the token name (‘p’ or ‘q’) and the steps the token will move on the board (int).  This method will take care of one token moving on the board.  It will also update the token’s total steps, and it will take care of kicking out other opponent tokens as needed.  The play_game method will use this method.
-* play_game method takes two parameters, the players list, and the turns list.  The players list is the list of positions players choose, like [‘A’, ‘C’] means two players will play the game at position A and C.  Turns list is a list of tuples with each tuple a roll for one player. For example, [('A', 6), ('A', 4), ('C', 5)] means player A rolls 6, then rolls 4, and player C rolls 5. This method will create the player list first using the players list pass in, and then move the tokens according to the turns list following the priority rule and update the tokens position and the player’s game state (whether finished the game or not). After all the moving is done in the turns list,  the method will return a list of strings representing the current spaces of all of the tokens for each player in the list after moving the tokens following the rules described above.  **‘H’ for home yard, ‘R’ for ready to go position, ‘E’ for finished position, and other letters/numbers for the space the token has landed on**.
 
 
 Here is an example:
@@ -69,3 +47,5 @@ False
 B5
 
 ```
+
+
