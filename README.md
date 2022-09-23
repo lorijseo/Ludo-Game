@@ -1,10 +1,10 @@
-#LUDO
+# LUDO
 
-##Description:
+## Description:
 
 This is a simplified version of the original Ludo game where 2 - 4 players can play. Each player has 2 tokens and takes a turn rolling the dice. On a turn, a player can move a token that is on the board clockwise the number of steps indicated by the die. The winner is determined by the first player whose 2 tokens land on the finishing square.
 
-##Game Rules:
+## Game Rules:
 
 There are five locations a player’s token must navigate through: their **home yard**, their **ready to go** position, the **general board**, their **home squares**, and the **finishing square**. 
 
