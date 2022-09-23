@@ -18,7 +18,7 @@ All players begin with two tokens in their respective “home  yard”. A player
 **2)** If the player’s two tokens land on the same space on the board, the player will stack the two tokens and move them as one piece until they reach the finishing square. When stacked pieces are sent back to their home yard by an opponent landing on them, they are no longer stacked. Note that if two tokens are both at the “ready to go” position, they are not stacked.
 
 
-##Decision-making Algorithm
+## Decision-making Algorithm
 A **decision-making** algorithm was implemented for a player to choose a certain token to move.  If the player has two tokens on the board that can be moved, then player will use the following priority rules to decide which token to move:
 
 **1)** If the die roll is 6, try to let the token that still in the home yard get out of the home yard (if both tokens are in the home yard, choose the first one ‘p’)
