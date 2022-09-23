@@ -1,11 +1,11 @@
 # LUDO
 
 ## Description:
-
-This is a simplified version of the original Ludo game where 2 - 4 players can play. Each player has 2 tokens and takes a turn rolling the dice. On a turn, a player can move a token that is on the board clockwise the number of steps indicated by the die. The winner is determined by the first player whose 2 tokens land on the finishing square.
+This is a simplified version of the original Ludo game using OOP. 
+A decision-making algorithm was implemented for a player to choose a certain token to move based on the predetermined dice roll. 
 
 ## Game Rules:
-
+Each player has 2 tokens and takes a turn rolling the dice. On a turn, a player can move a token that is on the board clockwise the number of steps indicated by the die. The winner is determined by the first player whose 2 tokens land on the finishing square.
 There are five locations a player’s token must navigate through: their **home yard**, their **ready to go** position, the **general board**, their **home squares**, and the **finishing square**. 
 
 All players begin with two tokens in their respective “home  yard”. A player must roll a 6 to move a token out of the “home yard” to “ready to go” position. A player’s token must go through the “general board” with 50 squares until they reach their “home squares”. Once a token enters the player’s “home squares”, the token can only reach the “finishing square” on an exact roll. If the roll number is larger than the steps needed to get to the “finishing square”, the token will bounce back the remaining number of steps.
