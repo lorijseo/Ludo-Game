@@ -1,4 +1,5 @@
 # LUDO
+![Ludo_board](https://user-images.githubusercontent.com/99004250/191935384-8ce54b8a-32f3-46f0-8fad-9536ad83d293.png)
 
 ## Description:
 This is a simplified version of the original Ludo game using OOP. 
