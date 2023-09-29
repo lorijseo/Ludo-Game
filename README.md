@@ -2,8 +2,10 @@
 ![Ludo_board](https://user-images.githubusercontent.com/99004250/191935384-8ce54b8a-32f3-46f0-8fad-9536ad83d293.png)
 
 ## Description:
-This is a simplified version of the original Ludo game using OOP. 
+A 2-4 player board game using decision-making algorithm to automate a gameplay using OOP.
 A decision-making algorithm was implemented for a player to choose a certain token to move based on the predetermined dice roll. 
+This is a simplified version of the original [Ludo game](https://en.wikipedia.org/wiki/Ludo) 
+
 
 ## Game Rules:
 Each player has 2 tokens and takes a turn rolling the dice. On a turn, a player can move a token that is on the board clockwise the number of steps indicated by the die. The winner is determined by the first player whose 2 tokens land on the finishing square.
