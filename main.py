@@ -303,10 +303,10 @@ class LudoGame:
         counter = 0
         while True:
             counter += 1
-            print("move #" + str(counter))
+            print("round #" + str(counter))
             print(self.get_all_player_spaces())
             if counter == 1000:
-                return "Tie Game. All players rolled 1000 times."
+                print("Tie Game! All players rolled 1000 times.")
             turns_list = self.play_one_round()
 
             # iterate through turns list
@@ -317,7 +317,7 @@ class LudoGame:
 
                 # verify if player is still active player
                 if current_player.get_completed():
-                    print("Player " + current_player.get_player_position() + " " + "won!")
+                    print("Player " + current_player.get_player_position() + " " + "wins!")
                     print("Final Results: " + str(self.get_all_player_spaces()))
                     return
 
@@ -328,13 +328,14 @@ class LudoGame:
                 potential_q_steps = current_player.get_token_q_step_count() + current_steps
 
                 # create list of opponent tokens on the board
-                all_opponent_spaces = []
-                for opponent in self.get_player_list():
-                    if opponent.get_player_position() != current_player.get_player_position():
-                        for index in range(0, 2):
-                            opponent_token = opponent.get_current_pos()[index]
-                            if opponent_token != "H" and opponent_token != "R" and opponent_token != "E":
-                                all_opponent_spaces.append(opponent.get_current_pos()[index])
+                opponent_spaces = self.get_all_opponent_spaces(current_player)
+                # all_opponent_spaces = []
+                # for opponent in self.get_player_list():
+                #     if opponent.get_player_position() != current_player.get_player_position():
+                #         for index in range(0, 2):
+                #             opponent_token = opponent.get_current_pos()[index]
+                #             if opponent_token != "H" and opponent_token != "R" and opponent_token != "E":
+                #                 all_opponent_spaces.append(opponent.get_current_pos()[index])
 
                 # priority rule 1 for token p: token that can get out of home yard moves
                 if current_steps == 6 and tokens_location[0] == "H":
@@ -355,10 +356,10 @@ class LudoGame:
                     current_player.get_completed()
 
                 # priority rule 3 for token p : token that can kick opponent's token moves
-                elif current_player.get_space_name(potential_p_steps) in all_opponent_spaces:
+                elif current_player.get_space_name(potential_p_steps) in opponent_spaces:
 
                     # check if both token p and q can kick opponent's token
-                    if current_player.get_space_name(potential_q_steps) in all_opponent_spaces:
+                    if current_player.get_space_name(potential_q_steps) in opponent_spaces:
 
                         # the token that is closer to home will move and kick opponent's token
                         if current_player.get_token_p_step_count() > current_player.get_token_q_step_count():
@@ -369,7 +370,7 @@ class LudoGame:
                     self.move_token(current_player, "p", current_steps)
 
                 # priority rule 3 for token q: token that can kick opponent's token moves
-                elif current_player.get_space_name(potential_q_steps) in all_opponent_spaces:
+                elif current_player.get_space_name(potential_q_steps) in opponent_spaces:
                     self.move_token(current_player, "q", current_steps)
 
                 # priority rule 4: the token closer to home yard moves
@@ -391,13 +392,6 @@ class LudoGame:
                     # check if token p is out of home yard
                     elif current_player.get_token_p_step_count() > -1:
                         self.move_token(current_player, "p", current_steps)
-
-        # create an updated list of players' spaces
-        # all_player_spaces = []
-        # for player in players_list:
-        #     all_player_spaces += self.get_player_by_position(player).get_current_pos()
-        #
-        # return all_player_spaces
 
     def get_all_player_spaces(self):
         """returns an updated list of player's position"""
@@ -438,9 +432,18 @@ class LudoGame:
         print(turns_list)
         return turns_list
 
+    def get_all_opponent_spaces(self, current_player):
+        """returns list of all opponent spaces given current player"""
+        all_opponent_spaces = []
+        for opponent in self.get_player_list():
+            if opponent.get_player_position() != current_player.get_player_position():
+                for index in range(0, 2):
+                    opponent_token = opponent.get_current_pos()[index]
+                    if opponent_token != "H" and opponent_token != "R" and opponent_token != "E":
+                        all_opponent_spaces.append(opponent.get_current_pos()[index])
+        return all_opponent_spaces
+
 
 game = LudoGame()
-current_tokens_space = game.play_game()
-
-
+game.play_game()
 
