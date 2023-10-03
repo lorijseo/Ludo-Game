@@ -1,3 +1,6 @@
+import random
+
+
 class Player:
     """A class to represent a player"""
     def __init__(self, player_position):
@@ -298,13 +301,17 @@ class LudoGame:
         turn list"""
 
         # initialize list of players with player objects
-        for player in players_list:
-            self.update_player_list(Player(player))
+        # for player in players_list:
+        #     self.update_player_list(Player(player))
 
         # iterate through turns list
         for turn_index in range(len(turns_list)):
 
             current_player = self.get_player_by_position(turns_list[turn_index][0])
+
+            if current_player.get_completed():
+                print("Player " + turns_list[turn_index][0] + " " + "won!")
+                return
 
             # verify if player is still active player
             if not current_player.get_completed():
@@ -386,7 +393,8 @@ class LudoGame:
 
         return all_player_spaces
 
-    def initialize_player_count(self):
+    def initialize_players(self):
+        """return a list of players names given user input"""
         potential_players = ['A', 'B', 'C', 'D']
         while True:
             input_value = input('This is a 2-4 player game. How many players are playing? ')
@@ -401,17 +409,19 @@ class LudoGame:
                 print('The number is too small or too large.')
                 continue
             else:
-
-                self._player_list = potential_players[:int(input_value)]
+                player_list = potential_players[:int(input_value)]
+                for player in player_list:
+                    self.update_player_list(Player(player))
                 print('Ludo game starting with ' + input_value + ' players')
-                print(self._player_list)
-                return
-        return
+                return player_list
 
-players = ['A', 'B', 'C', 'D']
+
+turns = [('A', 6),('A', 4),('A', 4),('A', 4),('A', 5),('A', 6),('A', 4),('A', 6),('A', 4),('A', 6),('A', 6),('A', 4),('A', 6),('A', 4),('A', 6),('A', 6),('A', 4),('A', 6),('A', 6),('A', 4),('A', 6),('A', 6),('A', 4),('A', 6),('A', 3),('A', 6),('B', 6),('A', 6)]
+
 # turns = [('A', 6), ('A', 4), ('A', 5), ('A', 4), ('B', 6), ('B', 4), ('B', 1), ('B', 2), ('A', 6), ('A', 4), ('A', 6), ('A', 3), ('A', 5), ('A', 1), ('A', 5), ('A', 4)]
-turns = [('A', 6), ('A', 4), ('A', 5), ('A', 4), ('B', 6)]
+# turns = [('A', 6), ('A', 4), ('A', 5), ('A', 4), ('B', 6)]
 game = LudoGame()
+players = game.initialize_players()
 current_tokens_space = game.play_game(players, turns)
 player_A = game.get_player_by_position('A')
 player_B = game.get_player_by_position('B')
@@ -421,5 +431,5 @@ print(player_B.get_completed())
 print(player_A.get_token_p_step_count())
 print(current_tokens_space)
 print(player_B.get_space_name(55))
-game.initialize_player_count()
+
 
