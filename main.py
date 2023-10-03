@@ -296,30 +296,36 @@ class LudoGame:
 
         return
 
-    def play_game(self, players_list, turns_list):
+    def play_game(self):
         """return a list representing current spaces of all the tokens for each player given player list and
         turn list"""
+        players_list = self.initialize_players()
+        counter = 0
+        while True:
+            counter += 1
+            print("move #" + str(counter))
+            print(self.get_all_player_spaces())
+            if counter == 1000:
+                return "Tie Game. All players rolled 1000 times."
+            turns_list = self.play_one_round()
 
-        # initialize list of players with player objects
-        # for player in players_list:
-        #     self.update_player_list(Player(player))
+            # iterate through turns list
+            for turn_index in range(len(turns_list)):
 
-        # iterate through turns list
-        for turn_index in range(len(turns_list)):
+                current_player = self.get_player_by_position(turns_list[turn_index][0])
+                current_steps = turns_list[turn_index][1]
 
-            current_player = self.get_player_by_position(turns_list[turn_index][0])
+                # verify if player is still active player
+                if current_player.get_completed():
+                    print("Player " + current_player.get_player_position() + " " + "won!")
+                    print("Final Results: " + str(self.get_all_player_spaces()))
+                    return
 
-            if current_player.get_completed():
-                print("Player " + turns_list[turn_index][0] + " " + "won!")
-                return
-
-            # verify if player is still active player
-            if not current_player.get_completed():
                 tokens_location = current_player.get_current_pos()
 
                 # player's potential token locations to consider for decision
-                potential_p_steps = current_player.get_token_p_step_count() + turns_list[turn_index][1]
-                potential_q_steps = current_player.get_token_q_step_count() + turns_list[turn_index][1]
+                potential_p_steps = current_player.get_token_p_step_count() + current_steps
+                potential_q_steps = current_player.get_token_q_step_count() + current_steps
 
                 # create list of opponent tokens on the board
                 all_opponent_spaces = []
@@ -331,21 +337,21 @@ class LudoGame:
                                 all_opponent_spaces.append(opponent.get_current_pos()[index])
 
                 # priority rule 1 for token p: token that can get out of home yard moves
-                if turns_list[turn_index][1] == 6 and tokens_location[0] == "H":
+                if current_steps == 6 and tokens_location[0] == "H":
                     self.move_token(current_player, "p", 1)
 
                 # priority rule 1 for token q: token that can get out of home yard moves
-                elif turns_list[turn_index][1] == 6 and tokens_location[1] == "H":
+                elif current_steps == 6 and tokens_location[1] == "H":
                     self.move_token(current_player, "q", 1)
 
                 # priority rule 2 for token p: token that can reach end position moves
                 elif potential_p_steps == 57:
-                    self.move_token(current_player, "p", turns_list[turn_index][1])
+                    self.move_token(current_player, "p", current_steps)
                     current_player.get_completed()
 
                 # priority rule 2 for token q: token that can reach end position moves
                 elif potential_q_steps == 57:
-                    self.move_token(current_player, "q", turns_list[turn_index][1])
+                    self.move_token(current_player, "q", current_steps)
                     current_player.get_completed()
 
                 # priority rule 3 for token p : token that can kick opponent's token moves
@@ -356,15 +362,15 @@ class LudoGame:
 
                         # the token that is closer to home will move and kick opponent's token
                         if current_player.get_token_p_step_count() > current_player.get_token_q_step_count():
-                            self.move_token(current_player, "q", turns_list[turn_index][1])
+                            self.move_token(current_player, "q", current_steps)
                         else:
-                            self.move_token(current_player, "p", turns_list[turn_index][1])
+                            self.move_token(current_player, "p", current_steps)
 
-                    self.move_token(current_player, "p", turns_list[turn_index][1])
+                    self.move_token(current_player, "p", current_steps)
 
                 # priority rule 3 for token q: token that can kick opponent's token moves
                 elif current_player.get_space_name(potential_q_steps) in all_opponent_spaces:
-                    self.move_token(current_player, "q", turns_list[turn_index][1])
+                    self.move_token(current_player, "q", current_steps)
 
                 # priority rule 4: the token closer to home yard moves
                 else:
@@ -374,28 +380,36 @@ class LudoGame:
 
                         # token closer to home yard moves
                         if current_player.get_token_p_step_count() > current_player.get_token_q_step_count():
-                            self.move_token(current_player, "q", turns_list[turn_index][1])
+                            self.move_token(current_player, "q", current_steps)
                         else:
-                            self.move_token(current_player, "p", turns_list[turn_index][1])
+                            self.move_token(current_player, "p", current_steps)
 
                     # check if token q is out of home yard
                     elif current_player.get_token_q_step_count() > -1:
-                        self.move_token(current_player, "q", turns_list[turn_index][1])
+                        self.move_token(current_player, "q", current_steps)
 
                     # check if token p is out of home yard
                     elif current_player.get_token_p_step_count() > -1:
-                        self.move_token(current_player, "p", turns_list[turn_index][1])
+                        self.move_token(current_player, "p", current_steps)
 
         # create an updated list of players' spaces
-        all_player_spaces = []
-        for player in players_list:
-            all_player_spaces += self.get_player_by_position(player).get_current_pos()
+        # all_player_spaces = []
+        # for player in players_list:
+        #     all_player_spaces += self.get_player_by_position(player).get_current_pos()
+        #
+        # return all_player_spaces
 
+    def get_all_player_spaces(self):
+        """returns an updated list of player's position"""
+        all_player_spaces = []
+        for player in self._player_list:
+            all_player_spaces += player.get_current_pos()
         return all_player_spaces
 
     def initialize_players(self):
-        """return a list of players names given user input"""
+        """return a list of players given user input"""
         potential_players = ['A', 'B', 'C', 'D']
+
         while True:
             input_value = input('This is a 2-4 player game. How many players are playing? ')
             try:
@@ -415,21 +429,18 @@ class LudoGame:
                 print('Ludo game starting with ' + input_value + ' players')
                 return player_list
 
+    def play_one_round(self):
+        """returns one round of dice roll for all players representing one round in the game"""
+        turns_list = []
+        for player in self._player_list:
+            player_roll = [player.get_player_position(), random.randint(1, 6)]
+            turns_list.append(player_roll)
+        print(turns_list)
+        return turns_list
 
-turns = [('A', 6),('A', 4),('A', 4),('A', 4),('A', 5),('A', 6),('A', 4),('A', 6),('A', 4),('A', 6),('A', 6),('A', 4),('A', 6),('A', 4),('A', 6),('A', 6),('A', 4),('A', 6),('A', 6),('A', 4),('A', 6),('A', 6),('A', 4),('A', 6),('A', 3),('A', 6),('B', 6),('A', 6)]
 
-# turns = [('A', 6), ('A', 4), ('A', 5), ('A', 4), ('B', 6), ('B', 4), ('B', 1), ('B', 2), ('A', 6), ('A', 4), ('A', 6), ('A', 3), ('A', 5), ('A', 1), ('A', 5), ('A', 4)]
-# turns = [('A', 6), ('A', 4), ('A', 5), ('A', 4), ('B', 6)]
 game = LudoGame()
-players = game.initialize_players()
-current_tokens_space = game.play_game(players, turns)
-player_A = game.get_player_by_position('A')
-player_B = game.get_player_by_position('B')
-player_C = game.get_player_by_position('C')
-print(player_A.get_completed())
-print(player_B.get_completed())
-print(player_A.get_token_p_step_count())
-print(current_tokens_space)
-print(player_B.get_space_name(55))
+current_tokens_space = game.play_game()
+
 
 
