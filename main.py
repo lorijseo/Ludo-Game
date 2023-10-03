@@ -132,6 +132,8 @@ class Player:
 class LudoGame:
     """A class to represent LudoGame"""
     def __init__(self):
+        # self._num_of_players = None
+        # self._players = ['A', 'B', 'C', 'D']
         self._player_list = []
         self._turns_list = []
 
@@ -383,3 +385,41 @@ class LudoGame:
             all_player_spaces += self.get_player_by_position(player).get_current_pos()
 
         return all_player_spaces
+
+    def initialize_player_count(self):
+        potential_players = ['A', 'B', 'C', 'D']
+        while True:
+            input_value = input('This is a 2-4 player game. How many players are playing? ')
+            try:
+                int(input_value) == input_value
+
+            except ValueError:
+                print('The number must be an integer')
+                continue
+
+            if int(input_value) < 2 or int(input_value) > 4:
+                print('The number is too small or too large.')
+                continue
+            else:
+
+                self._player_list = potential_players[:int(input_value)]
+                print('Ludo game starting with ' + input_value + ' players')
+                print(self._player_list)
+                return
+        return
+
+players = ['A', 'B', 'C', 'D']
+# turns = [('A', 6), ('A', 4), ('A', 5), ('A', 4), ('B', 6), ('B', 4), ('B', 1), ('B', 2), ('A', 6), ('A', 4), ('A', 6), ('A', 3), ('A', 5), ('A', 1), ('A', 5), ('A', 4)]
+turns = [('A', 6), ('A', 4), ('A', 5), ('A', 4), ('B', 6)]
+game = LudoGame()
+current_tokens_space = game.play_game(players, turns)
+player_A = game.get_player_by_position('A')
+player_B = game.get_player_by_position('B')
+player_C = game.get_player_by_position('C')
+print(player_A.get_completed())
+print(player_B.get_completed())
+print(player_A.get_token_p_step_count())
+print(current_tokens_space)
+print(player_B.get_space_name(55))
+game.initialize_player_count()
+
