@@ -5,6 +5,14 @@ A 2-4 player board game using decision-making algorithm to automate a gameplay u
 A decision-making algorithm was implemented for a player to choose a certain token to move based on the predetermined dice roll. 
 This is a simplified version of the original [Ludo game](https://en.wikipedia.org/wiki/Ludo) 
 
+## What to Expect:
+Users will decide the number of players from 2-4. Once decided, the program will autoplay the game utilizing decision-making algorithm with a randomly generated dice(1d6).
+
+
+![image](https://github.com/lorijseo/Ludo-Game/blob/master/ludo.gif/4-players.gif?raw=true)
+
+
+
 ## Game Rules:
 Each player has 2 tokens and takes a turn rolling the dice. On a turn, a player can move a token that is on the board clockwise the number of steps indicated by the die. The winner is determined by the first player whose 2 tokens land on the finishing square.
 There are five locations a player’s token must navigate through: their **home yard**, their **ready to go** position, the **general board**, their **home squares**, and the **finishing square**. 
@@ -16,13 +24,16 @@ All players begin with two tokens in their respective “home  yard”. A player
 **Additional playing rules:**
 
 **1)** When a token finishes one move, if it lands on a space occupied by an opponent's (other player’s) token, the opponent token will be returned to its home yard. 
-![image](https://github.com/lorijseo/Ludo-Game/blob/master/ludo.gif/4-players.gif?raw=true)
+![image](https://github.com/lorijseo/Ludo-Game/blob/master/ludo.gif/token-kick.JPG?raw=true" data-hpc="true" class="Box-sc-g0xbh4-0 kzRgrI)
+
 
 **2)** If the player’s two tokens land on the same space on the board, the player will stack the two tokens and move them as one piece until they reach the finishing square. When stacked pieces are sent back to their home yard by an opponent landing on them, they are no longer stacked. Note that if two tokens are both at the “ready to go” position, they are not stacked.
 
 
 ## Decision-Making Algorithm
 A **decision-making** algorithm was implemented for a player to choose a certain token to move.  If the player has two tokens on the board that can be moved, then player will use the following priority rules to decide which token to move:
+
+![image](https://github.com/lorijseo/Ludo-Game/blob/master/ludo.gif/roll-6.JPG?raw=true)
 
 **1)** If the die roll is 6, try to let the token that still in the home yard get out of the home yard (if both tokens are in the home yard, choose the first one ‘p’)
 
@@ -32,28 +43,7 @@ A **decision-making** algorithm was implemented for a player to choose a certain
 
 **4)** Move the token that is further away from the finishing square
 
-
-
-Here is an example:
-
-```
-players = ['A', 'B']
-turns = [('A', 6), ('A', 4), ('A', 5), ('A', 4), ('B', 6), ('B', 4), ('B', 1), ('B', 2), ('A', 6), ('A', 4), ('A', 6), ('A', 3), ('A', 5), ('A', 1), ('A', 5), ('A', 4)]
-game = LudoGame()
-current_tokens_space = game.play_game(players, turns)
-player_A = game.get_player_by_position('A')
-print(player_A.get_completed())
-print(player_A.get_token_p_step_count())
-print(current_tokens_space)
-player_B = game.get_player_by_position('B')
-print(player_B.get_space_name(55))
-
-And the output will be:
-False
-28
-[‘28’, ‘28’, ‘21’, ‘H’]
-B5
-
-```
+## How do I know who won?
+![image](https://github.com/lorijseo/Ludo-Game/blob/master/ludo.gif/win.JPG?raw=true)
 
 
