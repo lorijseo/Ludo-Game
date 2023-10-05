@@ -1,6 +1,4 @@
 # LUDO
-
-## Description:
 A 2-4 player board game using decision-making algorithm to automate a gameplay using OOP.
 A decision-making algorithm was implemented for a player to choose a certain token to move based on the predetermined dice roll. 
 This is a simplified version of the original [Ludo game](https://en.wikipedia.org/wiki/Ludo) 
