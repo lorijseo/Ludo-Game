@@ -1,11 +1,9 @@
 # LUDO
-![Ludo_board](https://user-images.githubusercontent.com/99004250/191935384-8ce54b8a-32f3-46f0-8fad-9536ad83d293.png)
 
 ## Description:
 A 2-4 player board game using decision-making algorithm to automate a gameplay using OOP.
 A decision-making algorithm was implemented for a player to choose a certain token to move based on the predetermined dice roll. 
 This is a simplified version of the original [Ludo game](https://en.wikipedia.org/wiki/Ludo) 
-
 
 ## Game Rules:
 Each player has 2 tokens and takes a turn rolling the dice. On a turn, a player can move a token that is on the board clockwise the number of steps indicated by the die. The winner is determined by the first player whose 2 tokens land on the finishing square.
@@ -13,10 +11,12 @@ There are five locations a player’s token must navigate through: their **home 
 
 All players begin with two tokens in their respective “home  yard”. A player must roll a 6 to move a token out of the “home yard” to “ready to go” position. A player’s token must go through the “general board” with 50 squares until they reach their “home squares”. Once a token enters the player’s “home squares”, the token can only reach the “finishing square” on an exact roll. If the roll number is larger than the steps needed to get to the “finishing square”, the token will bounce back the remaining number of steps.
 
+![Ludo_board](https://user-images.githubusercontent.com/99004250/191935384-8ce54b8a-32f3-46f0-8fad-9536ad83d293.png)
 
 **Additional playing rules:**
 
 **1)** When a token finishes one move, if it lands on a space occupied by an opponent's (other player’s) token, the opponent token will be returned to its home yard. 
+![image](https://github.com/lorijseo/Ludo-Game/blob/master/ludo.gif/4-players.gif?raw=true)
 
 **2)** If the player’s two tokens land on the same space on the board, the player will stack the two tokens and move them as one piece until they reach the finishing square. When stacked pieces are sent back to their home yard by an opponent landing on them, they are no longer stacked. Note that if two tokens are both at the “ready to go” position, they are not stacked.
 
