@@ -449,6 +449,11 @@ class LudoGame:
                     return
 
                 tokens_location = current_player.get_current_pos()
+                token_p_location = tokens_location[0]
+                token_q_location = tokens_location[1]
+
+                p_at_home = token_p_location == "H"
+                q_at_home = token_q_location == "H"
 
                 # player's potential token locations to consider for decision
                 potential_p_steps = current_player.get_token_p_step_count() + current_steps
@@ -456,37 +461,32 @@ class LudoGame:
 
                 # create list of opponent tokens on the board
                 opponent_spaces = self.get_all_opponent_spaces(current_player)
-                # all_opponent_spaces = []
-                # for opponent in self.get_player_list():
-                #     if opponent.get_player_position() != current_player.get_player_position():
-                #         for index in range(0, 2):
-                #             opponent_token = opponent.get_current_pos()[index]
-                #             if opponent_token != "H" and opponent_token != "R" and opponent_token != "E":
-                #                 all_opponent_spaces.append(opponent.get_current_pos()[index])
 
                 # priority rule 1 for token p: token that can get out of home yard moves
-                if current_steps == 6 and tokens_location[0] == "H":
+                if current_steps == 6 and p_at_home:
                     self.move_token_p(current_player, 1)
+                    continue
 
                 # priority rule 1 for token q: token that can get out of home yard moves
-                elif current_steps == 6 and tokens_location[1] == "H":
+                elif current_steps == 6 and q_at_home:
                     self.move_token_q(current_player, 1)
+                    continue
 
                 # priority rule 2 for token p: token that can reach end position moves
-                elif potential_p_steps == 57:
+                if potential_p_steps == 57 and not p_at_home:
                     self.move_token_p(current_player,  current_steps)
                     current_player.get_completed()
 
                 # priority rule 2 for token q: token that can reach end position moves
-                elif potential_q_steps == 57:
+                elif potential_q_steps == 57 and not q_at_home:
                     self.move_token_q(current_player, current_steps)
                     current_player.get_completed()
 
                 # priority rule 3 for token p : token that can kick opponent's token moves
-                elif current_player.get_space_name(potential_p_steps) in opponent_spaces:
+                elif current_player.get_space_name(potential_p_steps) in opponent_spaces and not p_at_home:
 
                     # check if both token p and q can kick opponent's token
-                    if current_player.get_space_name(potential_q_steps) in opponent_spaces:
+                    if current_player.get_space_name(potential_q_steps) in opponent_spaces and not q_at_home:
 
                         # the token that is closer to home will move and kick opponent's token
                         if current_player.get_token_p_step_count() > current_player.get_token_q_step_count():
@@ -497,14 +497,14 @@ class LudoGame:
                     self.move_token_p(current_player, current_steps)
 
                 # priority rule 3 for token q: token that can kick opponent's token moves
-                elif current_player.get_space_name(potential_q_steps) in opponent_spaces:
+                elif current_player.get_space_name(potential_q_steps) in opponent_spaces and not q_at_home:
                     self.move_token_q(current_player, current_steps)
 
                 # priority rule 4: the token closer to home yard moves
                 else:
 
                     # check if both tokens are out of home yard
-                    if current_player.get_token_p_step_count() > -1 and current_player.get_token_q_step_count() > -1:
+                    if not p_at_home and not q_at_home:
 
                         # token closer to home yard moves
                         if current_player.get_token_p_step_count() > current_player.get_token_q_step_count():
