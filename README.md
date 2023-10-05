@@ -5,18 +5,18 @@ This is a simplified version of the original [Ludo game](https://en.wikipedia.or
 
 ## What to Expect:
 Users will decide the number of players from 2-4. Once decided, the program will autoplay the game utilizing decision-making algorithm with a randomly generated dice(1d6).
+
 ![image](https://github.com/lorijseo/Ludo-Game/blob/master/ludo.gif/2-player-intro.JPG?raw=true)
+
 * Here is an example if the user decided to have 2 players
 * You will notice there is a pattern of 3 lines repeating:
   1. Round # represent each player rolling once
   2. The current position of all the tokens. The first two elements represent PLAYER A's tokens. The next two represents PLAYER B's tokens.
   3. References the PLAYER by their letter (A,B,C,D) and the dice they rolled (1d6)
-     
-![image](https://github.com/lorijseo/Ludo-Game/assets/99004250/dae48081-6283-4aa0-9bab-8f4caf8b4ca6)
 
 
 * Here is an example if the user decides to have 4 players
-* 
+
 ![image](https://github.com/lorijseo/Ludo-Game/blob/master/ludo.gif/4-players.gif?raw=true)
 
 
