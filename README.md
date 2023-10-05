@@ -32,6 +32,7 @@ All players begin with two tokens in their respective “home  yard”. A player
 
 **1)** When a token finishes one move, if it lands on a space occupied by an opponent's (other player’s) token, the opponent token will be returned to its home yard. 
 
+
 ![image](https://github.com/lorijseo/Ludo-Game/blob/master/ludo.gif/token-kick.JPG?raw=true)
 
 * PLAYER C was on position 53. They rolled a 3, so their new updated position would be 56. However, PLAYER D is on position 56, kicking both of PLAYER C's token back to HOME
