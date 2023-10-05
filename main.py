@@ -160,141 +160,268 @@ class LudoGame:
 
         return "Player not found!"
 
-    def move_token(self, player_object, token_name, steps):
-        """updates player's token step count and player's current position given player, token name,
-         and number of steps"""
+    def move_token_p(self, player_object, steps):
+        # update player's p step count
+        player_object.update_token_p_step_count(steps)
+        potential_p_space = player_object.get_space_name(player_object.get_token_p_step_count())
 
-        # considering player's token p
-        if token_name == "p":
+        # create list of opponents
+        opponent_list = self.get_player_list().copy()
+        opponent_list.remove(player_object)
 
-            # update player's p step count
-            player_object.update_token_p_step_count(steps)
-            potential_p_space = player_object.get_space_name(player_object.get_token_p_step_count())
+        # check if we can kick opponent token
+        for current_opponent in opponent_list:
 
-            # create list of opponents
-            opponent_list = self.get_player_list().copy()
-            opponent_list.remove(player_object)
+            for index in range(0, 2):
 
-            # check if we can kick opponent token
-            for current_opponent in opponent_list:
+                opponent_token = current_opponent.get_current_pos()[index]
 
-                for index in range(0, 2):
+                # check if we can kick opponent's p token
+                if index == 0 and potential_p_space == opponent_token:
 
-                    opponent_token = current_opponent.get_current_pos()[index]
+                    # check if opponent's p token on the general board
+                    if opponent_token != "H" and opponent_token != "R" and opponent_token != "E":
 
-                    # check if we can kick opponent's p token
-                    if index == 0 and potential_p_space == opponent_token:
+                        opponent_p_steps = current_opponent.get_token_p_step_count()
 
-                        # check if opponent's p token on the general board
-                        if opponent_token != "H" and opponent_token != "R" and opponent_token != "E":
+                        # check if opponent's tokens are stacked to kick both tokens if needed
+                        if current_opponent.get_token_stacked():
+                            current_opponent.update_token_q_step_count(-opponent_p_steps - 1)
+                            current_opponent.get_current_pos()[1] = "H"
+                            current_opponent.set_token_stacked()
 
-                            opponent_p_steps = current_opponent.get_token_p_step_count()
+                        # kick opponent's p token back to home yard
+                        current_opponent.update_token_p_step_count(-opponent_p_steps - 1)
+                        current_opponent.get_current_pos()[index] = "H"
 
-                            # check if opponent's tokens are stacked to kick both tokens if needed
-                            if current_opponent.get_token_stacked():
-                                current_opponent.update_token_q_step_count(-opponent_p_steps - 1)
-                                current_opponent.get_current_pos()[1] = "H"
-                                current_opponent.set_token_stacked()
+                # check if we can kick opponent's q token
+                elif index == 1 and potential_p_space == opponent_token:
 
-                            # kick opponent's p token back to home yard
-                            current_opponent.update_token_p_step_count(-opponent_p_steps-1)
-                            current_opponent.get_current_pos()[index] = "H"
-
-                    # check if we can kick opponent's q token
-                    elif index == 1 and potential_p_space == opponent_token:
-
-                        # check if opponent's q token on the general board
-                        if opponent_token != "H" and opponent_token != "R" and opponent_token != "E":
-
-                            opponent_q_steps = current_opponent.get_token_q_step_count()
-
-                            # check if opponent's tokens are stacked to kick both tokens if needed
-                            if current_opponent.get_token_stacked() and index == 1:
-                                current_opponent.update_token_p_step_count(-opponent_q_steps - 1)
-                                current_opponent.get_current_pos()[0] = "H"
-                                current_opponent.set_token_stacked()
-
-                            # kick opponent's p token back to home yard
-                            opponent_q_steps = current_opponent.get_token_q_step_count()
-                            current_opponent.update_token_q_step_count(-opponent_q_steps-1)
-                            current_opponent.get_current_pos()[index] = "H"
-
-            # update player's p token position
-            player_object.get_current_pos()[0] = potential_p_space
-
-            # when player's tokens are stacked, token q's total step count and position are updated
-            if player_object.get_token_stacked():
-                player_object.update_token_q_step_count(steps)
-                potential_q_space = player_object.get_space_name(player_object.get_token_q_step_count())
-                player_object.get_current_pos()[1] = potential_q_space
-
-            # we stack player's tokens when player's p token lands on player's q token
-            elif potential_p_space == player_object.get_space_name(player_object.get_token_q_step_count()):
-                if potential_p_space != "H" and potential_p_space != "R":
-                    player_object.set_token_stacked()
-
-        # considering player's token q
-        elif token_name == "q":
-
-            # update player's q step count
-            player_object.update_token_q_step_count(steps)
-            potential_q_space = player_object.get_space_name(player_object.get_token_q_step_count())
-
-            # create list of opponents
-            opponent_list = self.get_player_list().copy()
-            opponent_list.remove(player_object)
-
-            # check if we can kick opponent token
-            for current_opponent in opponent_list:
-
-                for index in range(0, 2):
-
-                    opponent_token = current_opponent.get_current_pos()[index]
-
-                    # check if we can kick opponent's p token
-                    if index == 0 and potential_q_space == opponent_token:
-
-                        # check if opponent's p token on the general board
-                        if opponent_token != "H" and opponent_token != "R" and not current_opponent.get_completed():
-
-                            opponent_p_steps = current_opponent.get_token_p_step_count()
-
-                            # check if opponent's tokens are stacked to kick both tokens if needed
-                            if current_opponent.get_token_stacked() and index == 0:
-                                current_opponent.update_token_q_step_count(-opponent_p_steps - 1)
-                                current_opponent.get_current_pos()[1] = "H"
-                                current_opponent.set_token_stacked()
-
-                            # kick opponent's p token back to home yard
-                            current_opponent.update_token_p_step_count(-opponent_p_steps-1)
-                            current_opponent.get_current_pos()[0] = "H"
-
-                    # check if we can kick opponent's q token
-                    elif index == 1 and potential_q_space == opponent_token:
+                    # check if opponent's q token on the general board
+                    if opponent_token != "H" and opponent_token != "R" and opponent_token != "E":
 
                         opponent_q_steps = current_opponent.get_token_q_step_count()
 
-                        # check if opponent's q token on the general board
-                        if opponent_token != "H" and opponent_token != "R" and not current_opponent.get_completed():
+                        # check if opponent's tokens are stacked to kick both tokens if needed
+                        if current_opponent.get_token_stacked() and index == 1:
+                            current_opponent.update_token_p_step_count(-opponent_q_steps - 1)
+                            current_opponent.get_current_pos()[0] = "H"
+                            current_opponent.set_token_stacked()
 
-                            # check if opponent's tokens are stacked to kick both tokens if needed
-                            if current_opponent.get_token_stacked() and index == 1:
-                                current_opponent.update_token_p_step_count(-opponent_q_steps - 1)
-                                current_opponent.get_current_pos()[0] = "H"
-                                current_opponent.set_token_stacked()
+                        # kick opponent's p token back to home yard
+                        opponent_q_steps = current_opponent.get_token_q_step_count()
+                        current_opponent.update_token_q_step_count(-opponent_q_steps - 1)
+                        current_opponent.get_current_pos()[index] = "H"
 
-                            # kick opponent's p token back to home yard
-                            current_opponent.update_token_q_step_count(-opponent_q_steps-1)
-                            current_opponent.get_current_pos()[1] = "H"
+        # update player's p token position
+        player_object.get_current_pos()[0] = potential_p_space
 
-            # update player's q token position
+        # when player's tokens are stacked, token q's total step count and position are updated
+        if player_object.get_token_stacked():
+            player_object.update_token_q_step_count(steps)
+            potential_q_space = player_object.get_space_name(player_object.get_token_q_step_count())
             player_object.get_current_pos()[1] = potential_q_space
 
-            # we stack player's tokens when player's q token lands on player's p token
-            if potential_q_space == player_object.get_space_name(player_object.get_token_p_step_count()):
+        # we stack player's tokens when player's p token lands on player's q token
+        elif potential_p_space == player_object.get_space_name(player_object.get_token_q_step_count()):
+            if potential_p_space != "H" and potential_p_space != "R":
                 player_object.set_token_stacked()
 
-        return
+    def move_token_q(self, player_object, steps):
+        # update player's q step count
+        player_object.update_token_q_step_count(steps)
+        potential_q_space = player_object.get_space_name(player_object.get_token_q_step_count())
+
+        # create list of opponents
+        opponent_list = self.get_player_list().copy()
+        opponent_list.remove(player_object)
+
+        # check if we can kick opponent token
+        for current_opponent in opponent_list:
+
+            for index in range(0, 2):
+
+                opponent_token = current_opponent.get_current_pos()[index]
+
+                # check if we can kick opponent's p token
+                if index == 0 and potential_q_space == opponent_token:
+
+                    # check if opponent's p token on the general board
+                    if opponent_token != "H" and opponent_token != "R" and not current_opponent.get_completed():
+
+                        opponent_p_steps = current_opponent.get_token_p_step_count()
+
+                        # check if opponent's tokens are stacked to kick both tokens if needed
+                        if current_opponent.get_token_stacked() and index == 0:
+                            current_opponent.update_token_q_step_count(-opponent_p_steps - 1)
+                            current_opponent.get_current_pos()[1] = "H"
+                            current_opponent.set_token_stacked()
+
+                        # kick opponent's p token back to home yard
+                        current_opponent.update_token_p_step_count(-opponent_p_steps - 1)
+                        current_opponent.get_current_pos()[0] = "H"
+
+                # check if we can kick opponent's q token
+                elif index == 1 and potential_q_space == opponent_token:
+
+                    opponent_q_steps = current_opponent.get_token_q_step_count()
+
+                    # check if opponent's q token on the general board
+                    if opponent_token != "H" and opponent_token != "R" and not current_opponent.get_completed():
+
+                        # check if opponent's tokens are stacked to kick both tokens if needed
+                        if current_opponent.get_token_stacked() and index == 1:
+                            current_opponent.update_token_p_step_count(-opponent_q_steps - 1)
+                            current_opponent.get_current_pos()[0] = "H"
+                            current_opponent.set_token_stacked()
+
+                        # kick opponent's p token back to home yard
+                        current_opponent.update_token_q_step_count(-opponent_q_steps - 1)
+                        current_opponent.get_current_pos()[1] = "H"
+
+        # update player's q token position
+        player_object.get_current_pos()[1] = potential_q_space
+
+        # we stack player's tokens when player's q token lands on player's p token
+        if potential_q_space == player_object.get_space_name(player_object.get_token_p_step_count()):
+            player_object.set_token_stacked()
+
+
+    # def move_token(self, player_object, token_name, steps):
+    #     """updates player's token step count and player's current position given player, token name,
+    #      and number of steps"""
+    #
+    #     # considering player's token p
+    #     if token_name == "p":
+    #
+    #         # update player's p step count
+    #         player_object.update_token_p_step_count(steps)
+    #         potential_p_space = player_object.get_space_name(player_object.get_token_p_step_count())
+    #
+    #         # create list of opponents
+    #         opponent_list = self.get_player_list().copy()
+    #         opponent_list.remove(player_object)
+    #
+    #         # check if we can kick opponent token
+    #         for current_opponent in opponent_list:
+    #
+    #             for index in range(0, 2):
+    #
+    #                 opponent_token = current_opponent.get_current_pos()[index]
+    #
+    #                 # check if we can kick opponent's p token
+    #                 if index == 0 and potential_p_space == opponent_token:
+    #
+    #                     # check if opponent's p token on the general board
+    #                     if opponent_token != "H" and opponent_token != "R" and opponent_token != "E":
+    #
+    #                         opponent_p_steps = current_opponent.get_token_p_step_count()
+    #
+    #                         # check if opponent's tokens are stacked to kick both tokens if needed
+    #                         if current_opponent.get_token_stacked():
+    #                             current_opponent.update_token_q_step_count(-opponent_p_steps - 1)
+    #                             current_opponent.get_current_pos()[1] = "H"
+    #                             current_opponent.set_token_stacked()
+    #
+    #                         # kick opponent's p token back to home yard
+    #                         current_opponent.update_token_p_step_count(-opponent_p_steps-1)
+    #                         current_opponent.get_current_pos()[index] = "H"
+    #
+    #                 # check if we can kick opponent's q token
+    #                 elif index == 1 and potential_p_space == opponent_token:
+    #
+    #                     # check if opponent's q token on the general board
+    #                     if opponent_token != "H" and opponent_token != "R" and opponent_token != "E":
+    #
+    #                         opponent_q_steps = current_opponent.get_token_q_step_count()
+    #
+    #                         # check if opponent's tokens are stacked to kick both tokens if needed
+    #                         if current_opponent.get_token_stacked() and index == 1:
+    #                             current_opponent.update_token_p_step_count(-opponent_q_steps - 1)
+    #                             current_opponent.get_current_pos()[0] = "H"
+    #                             current_opponent.set_token_stacked()
+    #
+    #                         # kick opponent's p token back to home yard
+    #                         opponent_q_steps = current_opponent.get_token_q_step_count()
+    #                         current_opponent.update_token_q_step_count(-opponent_q_steps-1)
+    #                         current_opponent.get_current_pos()[index] = "H"
+    #
+    #         # update player's p token position
+    #         player_object.get_current_pos()[0] = potential_p_space
+    #
+    #         # when player's tokens are stacked, token q's total step count and position are updated
+    #         if player_object.get_token_stacked():
+    #             player_object.update_token_q_step_count(steps)
+    #             potential_q_space = player_object.get_space_name(player_object.get_token_q_step_count())
+    #             player_object.get_current_pos()[1] = potential_q_space
+    #
+    #         # we stack player's tokens when player's p token lands on player's q token
+    #         elif potential_p_space == player_object.get_space_name(player_object.get_token_q_step_count()):
+    #             if potential_p_space != "H" and potential_p_space != "R":
+    #                 player_object.set_token_stacked()
+    #
+    #     # considering player's token q
+    #     elif token_name == "q":
+    #
+    #         # update player's q step count
+    #         player_object.update_token_q_step_count(steps)
+    #         potential_q_space = player_object.get_space_name(player_object.get_token_q_step_count())
+    #
+    #         # create list of opponents
+    #         opponent_list = self.get_player_list().copy()
+    #         opponent_list.remove(player_object)
+    #
+    #         # check if we can kick opponent token
+    #         for current_opponent in opponent_list:
+    #
+    #             for index in range(0, 2):
+    #
+    #                 opponent_token = current_opponent.get_current_pos()[index]
+    #
+    #                 # check if we can kick opponent's p token
+    #                 if index == 0 and potential_q_space == opponent_token:
+    #
+    #                     # check if opponent's p token on the general board
+    #                     if opponent_token != "H" and opponent_token != "R" and not current_opponent.get_completed():
+    #
+    #                         opponent_p_steps = current_opponent.get_token_p_step_count()
+    #
+    #                         # check if opponent's tokens are stacked to kick both tokens if needed
+    #                         if current_opponent.get_token_stacked() and index == 0:
+    #                             current_opponent.update_token_q_step_count(-opponent_p_steps - 1)
+    #                             current_opponent.get_current_pos()[1] = "H"
+    #                             current_opponent.set_token_stacked()
+    #
+    #                         # kick opponent's p token back to home yard
+    #                         current_opponent.update_token_p_step_count(-opponent_p_steps-1)
+    #                         current_opponent.get_current_pos()[0] = "H"
+    #
+    #                 # check if we can kick opponent's q token
+    #                 elif index == 1 and potential_q_space == opponent_token:
+    #
+    #                     opponent_q_steps = current_opponent.get_token_q_step_count()
+    #
+    #                     # check if opponent's q token on the general board
+    #                     if opponent_token != "H" and opponent_token != "R" and not current_opponent.get_completed():
+    #
+    #                         # check if opponent's tokens are stacked to kick both tokens if needed
+    #                         if current_opponent.get_token_stacked() and index == 1:
+    #                             current_opponent.update_token_p_step_count(-opponent_q_steps - 1)
+    #                             current_opponent.get_current_pos()[0] = "H"
+    #                             current_opponent.set_token_stacked()
+    #
+    #                         # kick opponent's p token back to home yard
+    #                         current_opponent.update_token_q_step_count(-opponent_q_steps-1)
+    #                         current_opponent.get_current_pos()[1] = "H"
+    #
+    #         # update player's q token position
+    #         player_object.get_current_pos()[1] = potential_q_space
+    #
+    #         # we stack player's tokens when player's q token lands on player's p token
+    #         if potential_q_space == player_object.get_space_name(player_object.get_token_p_step_count()):
+    #             player_object.set_token_stacked()
+    #
+    #     return
 
     def play_game(self):
         """return a list representing current spaces of all the tokens for each player given player list and
@@ -339,20 +466,20 @@ class LudoGame:
 
                 # priority rule 1 for token p: token that can get out of home yard moves
                 if current_steps == 6 and tokens_location[0] == "H":
-                    self.move_token(current_player, "p", 1)
+                    self.move_token_p(current_player, 1)
 
                 # priority rule 1 for token q: token that can get out of home yard moves
                 elif current_steps == 6 and tokens_location[1] == "H":
-                    self.move_token(current_player, "q", 1)
+                    self.move_token_q(current_player, 1)
 
                 # priority rule 2 for token p: token that can reach end position moves
                 elif potential_p_steps == 57:
-                    self.move_token(current_player, "p", current_steps)
+                    self.move_token_p(current_player,  current_steps)
                     current_player.get_completed()
 
                 # priority rule 2 for token q: token that can reach end position moves
                 elif potential_q_steps == 57:
-                    self.move_token(current_player, "q", current_steps)
+                    self.move_token_q(current_player, current_steps)
                     current_player.get_completed()
 
                 # priority rule 3 for token p : token that can kick opponent's token moves
@@ -363,15 +490,15 @@ class LudoGame:
 
                         # the token that is closer to home will move and kick opponent's token
                         if current_player.get_token_p_step_count() > current_player.get_token_q_step_count():
-                            self.move_token(current_player, "q", current_steps)
+                            self.move_token_q(current_player, current_steps)
                         else:
-                            self.move_token(current_player, "p", current_steps)
+                            self.move_token_p(current_player, current_steps)
 
-                    self.move_token(current_player, "p", current_steps)
+                    self.move_token_p(current_player, current_steps)
 
                 # priority rule 3 for token q: token that can kick opponent's token moves
                 elif current_player.get_space_name(potential_q_steps) in opponent_spaces:
-                    self.move_token(current_player, "q", current_steps)
+                    self.move_token_q(current_player, current_steps)
 
                 # priority rule 4: the token closer to home yard moves
                 else:
@@ -381,17 +508,17 @@ class LudoGame:
 
                         # token closer to home yard moves
                         if current_player.get_token_p_step_count() > current_player.get_token_q_step_count():
-                            self.move_token(current_player, "q", current_steps)
+                            self.move_token_q(current_player, current_steps)
                         else:
-                            self.move_token(current_player, "p", current_steps)
+                            self.move_token_p(current_player, current_steps)
 
                     # check if token q is out of home yard
                     elif current_player.get_token_q_step_count() > -1:
-                        self.move_token(current_player, "q", current_steps)
+                        self.move_token_q(current_player, current_steps)
 
                     # check if token p is out of home yard
                     elif current_player.get_token_p_step_count() > -1:
-                        self.move_token(current_player, "p", current_steps)
+                        self.move_token_p(current_player, current_steps)
 
     def get_all_player_spaces(self):
         """returns an updated list of player's position"""
