@@ -57,7 +57,7 @@ A **decision-making** algorithm was implemented for a player to choose a certain
 
 **4)** Move the token that is further away from the finishing square
 
-## How do I know who won?
+## How to determine the winner
 ![image](https://github.com/lorijseo/Ludo-Game/blob/master/ludo.gif/win.JPG?raw=true)
 
 * Once both tokens from a player reaches the "finishing square" represented by "E", they win and the game immediately terminates.
